@@ -4,3 +4,18 @@
 **/Dockerfile*
 **/.dockerignore
 **/compose.yml
+
+# Local environment files and secrets
+**/.env
+**/.env.*
+**/secrets
+**/.secrets
+config/config.inc.php
+config/config.inc.php.bak
+
+# Local editor and macOS files
+**/.DS_Store
+**/*.code-workspace
+
+# Archived upstream automation
+docs/upstream-workflows
