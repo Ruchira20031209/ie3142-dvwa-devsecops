@@ -16,3 +16,12 @@ tests/__pycache__/
 hackable/uploads/*
 .DS_Store
 .DS_Store
+
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# Local secret directories
+/secrets/
+/.secrets/
