@@ -23,3 +23,6 @@ docs/upstream-workflows
 # Assignment architecture documentation
 docs/architecture
 docs/security
+
+# Local security scanner rules
+.semgrep
