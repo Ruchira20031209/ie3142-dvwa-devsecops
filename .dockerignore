@@ -19,3 +19,6 @@ config/config.inc.php.bak
 
 # Archived upstream automation
 docs/upstream-workflows
+
+# Assignment architecture documentation
+docs/architecture

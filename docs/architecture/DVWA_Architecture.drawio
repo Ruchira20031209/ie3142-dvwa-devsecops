@@ -1,0 +1,173 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="dvwa-current-runtime" name="DVWA architecture">
+    <mxGraphModel dx="1680" dy="970" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1680" pageHeight="970" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="mac" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#b8c4d3;strokeWidth=1.7;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="124" width="1600" height="698" />
+        </mxCell>
+        <mxCell id="runtime" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#f8fafc;strokeColor=#b8c4d3;strokeWidth=1.7;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="480" y="190" width="1120" height="595" />
+        </mxCell>
+        <mxCell id="tb1" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#eff6ff;strokeColor=#3675cb;strokeWidth=2;fontFamily=Arial;dashed=1;dashPattern=8 6;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="525" y="267" width="450" height="472" />
+        </mxCell>
+        <mxCell id="tb2" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#f0fdf4;strokeColor=#328357;strokeWidth=2;fontFamily=Arial;dashed=1;dashPattern=8 6;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1135" y="267" width="405" height="245" />
+        </mxCell>
+        <mxCell id="browser" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#708399;strokeWidth=2;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="85" y="350" width="245" height="125" />
+        </mxCell>
+        <mxCell id="app" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#3675cb;strokeWidth=2;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="565" y="350" width="370" height="125" />
+        </mxCell>
+        <mxCell id="db" value="" style="rounded=1;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#328357;strokeWidth=2;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1175" y="350" width="325" height="125" />
+        </mxCell>
+        <mxCell id="web-files" value="" style="rounded=0;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#3675cb;strokeWidth=1.8;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="585" y="619" width="330" height="106" />
+        </mxCell>
+        <mxCell id="db-volume" value="" style="rounded=0;arcSize=8;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#328357;strokeWidth=1.8;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1175" y="619" width="325" height="106" />
+        </mxCell>
+        <mxCell id="f1" value="" style="edgeStyle=none;rounded=0;html=0;strokeColor=#52647b;strokeWidth=2.2;endArrow=block;endFill=1;endSize=8;startArrow=none;startFill=1;startSize=8;exitX=1;exitY=0.28;entryX=0;entryY=0.28;exitDx=0;exitDy=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="browser" target="app">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="f2" value="" style="edgeStyle=none;rounded=0;html=0;strokeColor=#52647b;strokeWidth=2.2;endArrow=block;endFill=1;endSize=8;startArrow=none;startFill=1;startSize=8;exitX=0;exitY=0.76;entryX=1;entryY=0.76;exitDx=0;exitDy=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="app" target="browser">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="f3" value="" style="edgeStyle=none;rounded=0;html=0;strokeColor=#52647b;strokeWidth=2.2;endArrow=block;endFill=1;endSize=8;startArrow=none;startFill=1;startSize=8;exitX=1;exitY=0.28;entryX=0;entryY=0.28;exitDx=0;exitDy=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="app" target="db">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="f4" value="" style="edgeStyle=none;rounded=0;html=0;strokeColor=#52647b;strokeWidth=2.2;endArrow=block;endFill=1;endSize=8;startArrow=none;startFill=1;startSize=8;exitX=0;exitY=0.76;entryX=1;entryY=0.76;exitDx=0;exitDy=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="db" target="app">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="f5" value="" style="edgeStyle=none;rounded=0;html=0;strokeColor=#52647b;strokeWidth=2.2;endArrow=block;endFill=1;endSize=8;startArrow=block;startFill=1;startSize=8;exitX=0.5;exitY=1;entryX=0.5;entryY=0;exitDx=0;exitDy=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="app" target="web-files">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="f6" value="" style="edgeStyle=none;rounded=0;html=0;strokeColor=#52647b;strokeWidth=2.2;endArrow=block;endFill=1;endSize=8;startArrow=block;startFill=1;startSize=8;exitX=0.5;exitY=1;entryX=0.5;entryY=0;exitDx=0;exitDy=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="db" target="db-volume">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="text-1" value="DVWA local runtime architecture" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontColor=#172b43;fontSize=32;fontFamily=Arial;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="50" y="35" width="1450" height="45" />
+        </mxCell>
+        <mxCell id="text-2" value="Current Docker Compose setup • Local development and security testing" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontColor=#52647b;fontSize=18;fontFamily=Arial;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="50" y="83" width="1490" height="27" />
+        </mxCell>
+        <mxCell id="text-3" value="LOCAL MACBOOK" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontColor=#52647b;fontSize=16;fontFamily=Arial;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="63" y="141" width="470" height="29" />
+        </mxCell>
+        <mxCell id="text-4" value="Docker Desktop runtime" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontColor=#172b43;fontSize=20;fontFamily=Arial;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="502" y="209" width="380" height="29" />
+        </mxCell>
+        <mxCell id="text-5" value="Shared Docker bridge network: dvwa" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontColor=#52647b;fontSize=18;fontFamily=Arial;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1000" y="209" width="570" height="29" />
+        </mxCell>
+        <mxCell id="text-6" value="TB1 · Web application container" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontColor=#225f9e;fontSize=20;fontFamily=Arial;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="547" y="283" width="405" height="30" />
+        </mxCell>
+        <mxCell id="text-7" value="TB2 · Database container" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontColor=#286b47;fontSize=20;fontFamily=Arial;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1156" y="283" width="362" height="30" />
+        </mxCell>
+        <mxCell id="text-8" value="E1 · Browser / tester" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontColor=#172b43;fontSize=19;fontFamily=Arial;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="95" y="366" width="225" height="31" />
+        </mxCell>
+        <mxCell id="text-9" value="Runs on the MacBook" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontColor=#52647b;fontSize=18;fontFamily=Arial;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="95" y="407" width="225" height="26" />
+        </mxCell>
+        <mxCell id="text-10" value="Local HTTP access" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontColor=#52647b;fontSize=16;fontFamily=Arial;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="95" y="435" width="225" height="24" />
+        </mxCell>
+        <mxCell id="text-11" value="P1 · DVWA" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontColor=#172b43;fontSize=23;fontFamily=Arial;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="580" y="366" width="340" height="31" />
+        </mxCell>
+        <mxCell id="text-12" value="PHP + Apache" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontColor=#172b43;fontSize=19;fontFamily=Arial;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="580" y="407" width="340" height="26" />
+        </mxCell>
+        <mxCell id="text-13" value="Service: dvwa  •  Container port: 80" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontColor=#52647b;fontSize=16;fontFamily=Arial;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="580" y="439" width="340" height="23" />
+        </mxCell>
+        <mxCell id="text-14" value="P2 · MariaDB 10.11" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontColor=#172b43;fontSize=23;fontFamily=Arial;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1187" y="366" width="301" height="31" />
+        </mxCell>
+        <mxCell id="text-15" value="Database service" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontColor=#172b43;fontSize=19;fontFamily=Arial;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1187" y="407" width="301" height="26" />
+        </mxCell>
+        <mxCell id="text-16" value="Service: db  •  Container port: 3306" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontColor=#52647b;fontSize=16;fontFamily=Arial;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1187" y="439" width="301" height="23" />
+        </mxCell>
+        <mxCell id="text-17" value="D1 · Web files" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontColor=#172b43;fontSize=21;fontFamily=Arial;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="599" y="635" width="302" height="25" />
+        </mxCell>
+        <mxCell id="text-18" value="Sessions and uploads" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontColor=#172b43;fontSize=18;fontFamily=Arial;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="599" y="670" width="302" height="23" />
+        </mxCell>
+        <mxCell id="text-19" value="Web container filesystem" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontColor=#52647b;fontSize=15;fontFamily=Arial;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="599" y="699" width="302" height="20" />
+        </mxCell>
+        <mxCell id="text-20" value="D2 · Database volume" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontColor=#172b43;fontSize=21;fontFamily=Arial;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1189" y="635" width="297" height="25" />
+        </mxCell>
+        <mxCell id="text-21" value="Named volume: dvwa" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontColor=#172b43;fontSize=18;fontFamily=Arial;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1189" y="670" width="297" height="23" />
+        </mxCell>
+        <mxCell id="text-22" value="Persistent Docker-managed storage" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontColor=#52647b;fontSize=15;fontFamily=Arial;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1189" y="699" width="297" height="20" />
+        </mxCell>
+        <mxCell id="text-23" value="F1 · HTTP requests" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=#ffffff;fontColor=#172b43;fontSize=17;fontFamily=Arial;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="337" y="332" width="221" height="24" />
+        </mxCell>
+        <mxCell id="text-24" value="127.0.0.1:4280 → port 80" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=#ffffff;fontColor=#172b43;fontSize=16;fontFamily=Arial;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="337" y="356" width="221" height="22" />
+        </mxCell>
+        <mxCell id="text-25" value="F2 · HTML responses" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=#ffffff;fontColor=#172b43;fontSize=17;fontFamily=Arial;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="337" y="454" width="221" height="23" />
+        </mxCell>
+        <mxCell id="text-26" value="and session cookies" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=#ffffff;fontColor=#172b43;fontSize=16;fontFamily=Arial;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="337" y="477" width="221" height="23" />
+        </mxCell>
+        <mxCell id="text-27" value="F3 · SQL queries" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=#ffffff;fontColor=#172b43;fontSize=17;fontFamily=Arial;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="943" y="332" width="224" height="24" />
+        </mxCell>
+        <mxCell id="text-28" value="db:3306  •  user: dvwa" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=#ffffff;fontColor=#172b43;fontSize=16;fontFamily=Arial;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="943" y="356" width="224" height="22" />
+        </mxCell>
+        <mxCell id="text-29" value="F4 · Query results" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=center;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=#ffffff;fontColor=#172b43;fontSize=17;fontFamily=Arial;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="943" y="454" width="224" height="25" />
+        </mxCell>
+        <mxCell id="text-30" value="F5 · File reads" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontColor=#172b43;fontSize=17;fontFamily=Arial;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="772" y="535" width="175" height="24" />
+        </mxCell>
+        <mxCell id="text-31" value="and writes" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontColor=#172b43;fontSize=17;fontFamily=Arial;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="772" y="559" width="175" height="23" />
+        </mxCell>
+        <mxCell id="text-32" value="F6 · DB files" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontColor=#172b43;fontSize=17;fontFamily=Arial;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1358" y="535" width="192" height="24" />
+        </mxCell>
+        <mxCell id="text-33" value="/var/lib/mysql" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontColor=#172b43;fontSize=16;fontFamily=Arial;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1358" y="561" width="205" height="24" />
+        </mxCell>
+        <mxCell id="text-34" value="Only the web service is published to the Mac host; the database is reached through the Docker network." style="text;html=0;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontColor=#52647b;fontSize=16;fontFamily=Arial;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="506" y="750" width="1068" height="23" />
+        </mxCell>
+        <mxCell id="legend-dash" value="" style="edgeStyle=none;endArrow=none;dashed=1;dashPattern=8 6;strokeColor=#3675cb;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1">
+            <mxPoint as="sourcePoint" x="53" y="866" />
+            <mxPoint as="targetPoint" x="108" y="866" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="text-35" value="Container trust boundary" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontColor=#172b43;fontSize=18;fontFamily=Arial;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="123" y="851" width="375" height="29" />
+        </mxCell>
+        <mxCell id="text-36" value="E = external actor   •   P = process   •   D = data store   •   F = data flow" style="text;html=0;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontColor=#52647b;fontSize=18;fontFamily=Arial;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="515" y="851" width="1100" height="29" />
+        </mxCell>
+        <mxCell id="text-37" value="Host exposure: DVWA listens on 127.0.0.1:4280 only. MariaDB has no published host port." style="text;html=0;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=middle;spacing=0;strokeColor=none;fillColor=none;fontColor=#172b43;fontSize=19;fontFamily=Arial;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="50" y="902" width="1550" height="29" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
