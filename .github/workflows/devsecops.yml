@@ -1,0 +1,97 @@
+name: DevSecOps CI
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-test:
+    name: Build and test DVWA
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+
+    defaults:
+      run:
+        shell: bash
+
+    env:
+      COMPOSE_PROJECT_NAME: ie3142-ci
+      DB_PASSWORD: ${{ secrets.CI_DB_PASSWORD }}
+      DB_ROOT_PASSWORD: ${{ secrets.CI_DB_ROOT_PASSWORD }}
+      DVWA_BASE_URL: http://127.0.0.1:4280
+      CI_RESULTS_DIR: ${{ runner.temp }}/ie3142-ci-results
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Check configuration and record source
+        run: |
+          mkdir -p "$CI_RESULTS_DIR"
+          git rev-parse HEAD > "$CI_RESULTS_DIR/source-commit.txt"
+          sha256sum tests/test_security_regression.py > "$CI_RESULTS_DIR/test-script.sha256"
+          printf '%s/%s/actions/runs/%s\n' \
+            "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID" \
+            > "$CI_RESULTS_DIR/run-url.txt"
+          {
+            docker --version
+            docker compose version
+            python3 --version
+            uname -m
+          } > "$CI_RESULTS_DIR/tool-versions.txt"
+          if [[ -z "$DB_PASSWORD" || -z "$DB_ROOT_PASSWORD" ]]; then
+            echo "::error::Configure CI_DB_PASSWORD and CI_DB_ROOT_PASSWORD."
+            exit 1
+          fi
+          docker compose config --quiet
+
+      - name: Build DVWA image
+        run: |
+          docker compose pull db
+          docker compose --progress plain build --pull dvwa \
+            2>&1 | tee "$CI_RESULTS_DIR/build-console.txt"
+          docker image inspect ie3142-dvwa:local --format '{{.Id}}' \
+            > "$CI_RESULTS_DIR/app-image-id.txt"
+
+      - name: Start application and database
+        run: |
+          docker compose up -d --no-build --pull never --wait --wait-timeout 180
+
+      - name: Initialize disposable CI database
+        run: python3 -B -u tests/ci_setup_dvwa.py
+
+      - name: Run 14 regression tests
+        run: |
+          set +e
+          python3 -B -u tests/test_security_regression.py \
+            2>&1 | tee "$CI_RESULTS_DIR/test-console.txt"
+          tests_exit=$?
+          set -e
+          printf '%s\n' "$tests_exit" > "$CI_RESULTS_DIR/test-exit-code.txt"
+          printf 'Test exit code: %s\n' "$tests_exit"
+          exit "$tests_exit"
+
+      - name: Record container status
+        if: always()
+        run: |
+          mkdir -p "$CI_RESULTS_DIR"
+          docker compose ps -a > "$CI_RESULTS_DIR/container-status.txt"
+
+      - name: Clean up disposable CI containers
+        if: always()
+        run: docker compose down --volumes --remove-orphans
+
+      - name: Upload build and test evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: build-test-${{ github.run_number }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/ie3142-ci-results/
+          if-no-files-found: error
+          retention-days: 30

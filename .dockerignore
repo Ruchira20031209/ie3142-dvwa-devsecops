@@ -26,3 +26,6 @@ docs/security
 
 # Local security scanner rules
 .semgrep
+
+# Automated tests run outside the application image
+tests/

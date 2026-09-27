@@ -20,6 +20,6 @@ COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 COPY --chown=www-data:www-data . .
 COPY --chown=www-data:www-data config/config.inc.php.dist config/config.inc.php
 
-# This is configuring the stuff for the API
+# Install the API dependencies for automated builds.
 RUN cd /var/www/html/vulnerabilities/api \
- && composer install \
+ && composer install --no-interaction --no-progress --prefer-dist
