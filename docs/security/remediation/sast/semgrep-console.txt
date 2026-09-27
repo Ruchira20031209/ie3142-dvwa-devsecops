@@ -1,0 +1,314 @@
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 169 files tracked by git with 24 Code rules:
+  Scanning 169 files with 23 php rules.
+                    
+                    
+┌──────────────────┐
+│ 40 Code Findings │
+└──────────────────┘
+                    
+    instructions.php
+    ❯❱ php.lang.security.injection.tainted-filename.tainted-filename
+          ❰❰ Blocking ❱❱
+          File name based on user input risks server-side request forgery.
+          Details: https://sg.run/Ayqp                                    
+                                                                          
+           26┆ $instructions = file_get_contents( DVWA_WEB_PAGE_TO_ROOT.$readFile );
+               
+    phpinfo.php
+   ❯❯❱ php.lang.security.phpinfo-use.phpinfo-use
+          ❰❰ Blocking ❱❱
+          The 'phpinfo' function may reveal sensitive information about your environment.
+          Details: https://sg.run/W82E                                                   
+                                                                                         
+            8┆ phpinfo();
+                                                
+    vulnerabilities/api/src/HealthController.php
+    ❯❱ php.lang.security.injection.tainted-exec.tainted-exec
+          ❰❰ Blocking ❱❱
+          User input is passed to a function that executes a shell command. This can lead to remote code
+          execution.                                                                                    
+          Details: https://sg.run/kxEEz                                                                 
+                                                                                                        
+           88┆ exec ("ping -c 4 " . $target, $output, $ret_var);
+                                      
+    vulnerabilities/bac/source/low.php
+   ❯❯❱ php.lang.security.injection.tainted-sql-string.tainted-sql-string
+          ❰❰ Blocking ❱❱
+          User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL
+          strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL    
+          strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate   
+          data from the database. Instead, use prepared statements (`$mysqli->prepare("INSERT INTO test(id,   
+          label) VALUES (?, ?)");`) or a safe library.                                                        
+          Details: https://sg.run/lZYG                                                                        
+                                                                                                              
+           22┆ $check_query = "SELECT user_id FROM users WHERE user_id = $id";
+            ⋮┆----------------------------------------
+           35┆ $query = "SELECT first_name, last_name, user_id, avatar FROM users WHERE user_id = $id;";
+            ⋮┆----------------------------------------
+           79┆ $log_query = "INSERT INTO bac_log (user_id, target_id, ip_address) VALUES
+           80┆             ({$current_user_id}, {$target_id}, '{$ip}')";
+                                         
+    vulnerabilities/bac/source/medium.php
+   ❯❯❱ php.lang.security.injection.tainted-sql-string.tainted-sql-string
+          ❰❰ Blocking ❱❱
+          User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL
+          strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL    
+          strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate   
+          data from the database. Instead, use prepared statements (`$mysqli->prepare("INSERT INTO test(id,   
+          label) VALUES (?, ?)");`) or a safe library.                                                        
+          Details: https://sg.run/lZYG                                                                        
+                                                                                                              
+           21┆ $check_query = "SELECT user_id FROM users WHERE user_id = '$id'";
+            ⋮┆----------------------------------------
+           28┆ $query = "SELECT first_name, last_name, user_id, avatar FROM users WHERE user_id = '$id';";
+            ⋮┆----------------------------------------
+           71┆ $log_query = "INSERT INTO bac_log (user_id, target_id, ip_address) VALUES
+           72┆             ({$current_user_id}, {$target_id}, '{$ip}')";
+                                        
+    vulnerabilities/brute/source/low.php
+   ❯❯❱ php.lang.security.injection.tainted-sql-string.tainted-sql-string
+          ❰❰ Blocking ❱❱
+          User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL
+          strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL    
+          strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate   
+          data from the database. Instead, use prepared statements (`$mysqli->prepare("INSERT INTO test(id,   
+          label) VALUES (?, ?)");`) or a safe library.                                                        
+          Details: https://sg.run/lZYG                                                                        
+                                                                                                              
+           12┆ $query  = "SELECT * FROM `users` WHERE user = '$user' AND password = '$pass';";
+                                        
+    vulnerabilities/csp/source/jsonp.php
+   ❯❯❱ php.lang.security.injection.echoed-request.echoed-request
+          ❰❰ Blocking ❱❱
+          `Echo`ing user input risks cross-site scripting vulnerability. You should use `htmlentities()` when
+          showing data to users.                                                                             
+          Details: https://sg.run/Bqqb                                                                       
+                                                                                                             
+           ▶▶┆ Autofix ▶ echo htmlentities($callback . "(".json_encode($outp).")");
+           12┆ echo $callback . "(".json_encode($outp).")";
+                                        
+    vulnerabilities/exec/source/high.php
+    ❯❱ php.lang.security.injection.tainted-exec.tainted-exec
+          ❰❰ Blocking ❱❱
+          User input is passed to a function that executes a shell command. This can lead to remote code
+          execution.                                                                                    
+          Details: https://sg.run/kxEEz                                                                 
+                                                                                                        
+           26┆ $cmd = shell_exec( 'ping  ' . $target );
+   
+   ❯❯❱ php.lang.security.tainted-exec.tainted-exec
+          ❰❰ Blocking ❱❱
+          Executing non-constant commands. This can lead to command injection. You should use
+          `escapeshellarg()` when using command.                                             
+          Details: https://sg.run/JAkP                                                       
+                                                                                             
+           26┆ $cmd = shell_exec( 'ping  ' . $target );
+   
+    ❯❱ php.lang.security.injection.tainted-exec.tainted-exec
+          ❰❰ Blocking ❱❱
+          User input is passed to a function that executes a shell command. This can lead to remote code
+          execution.                                                                                    
+          Details: https://sg.run/kxEEz                                                                 
+                                                                                                        
+           30┆ $cmd = shell_exec( 'ping  -c 4 ' . $target );
+   
+   ❯❯❱ php.lang.security.tainted-exec.tainted-exec
+          ❰❰ Blocking ❱❱
+          Executing non-constant commands. This can lead to command injection. You should use
+          `escapeshellarg()` when using command.                                             
+          Details: https://sg.run/JAkP                                                       
+                                                                                             
+           30┆ $cmd = shell_exec( 'ping  -c 4 ' . $target );
+                                              
+    vulnerabilities/exec/source/impossible.php
+    ❯❱ php.lang.security.injection.tainted-exec.tainted-exec
+          ❰❰ Blocking ❱❱
+          User input is passed to a function that executes a shell command. This can lead to remote code
+          execution.                                                                                    
+          Details: https://sg.run/kxEEz                                                                 
+                                                                                                        
+           22┆ $cmd = shell_exec( 'ping  ' . $target );
+   
+   ❯❯❱ php.lang.security.tainted-exec.tainted-exec
+          ❰❰ Blocking ❱❱
+          Executing non-constant commands. This can lead to command injection. You should use
+          `escapeshellarg()` when using command.                                             
+          Details: https://sg.run/JAkP                                                       
+                                                                                             
+           22┆ $cmd = shell_exec( 'ping  ' . $target );
+   
+    ❯❱ php.lang.security.injection.tainted-exec.tainted-exec
+          ❰❰ Blocking ❱❱
+          User input is passed to a function that executes a shell command. This can lead to remote code
+          execution.                                                                                    
+          Details: https://sg.run/kxEEz                                                                 
+                                                                                                        
+           26┆ $cmd = shell_exec( 'ping  -c 4 ' . $target );
+   
+   ❯❯❱ php.lang.security.tainted-exec.tainted-exec
+          ❰❰ Blocking ❱❱
+          Executing non-constant commands. This can lead to command injection. You should use
+          `escapeshellarg()` when using command.                                             
+          Details: https://sg.run/JAkP                                                       
+                                                                                             
+           26┆ $cmd = shell_exec( 'ping  -c 4 ' . $target );
+                                       
+    vulnerabilities/exec/source/low.php
+    ❯❱ php.lang.security.injection.tainted-exec.tainted-exec
+          ❰❰ Blocking ❱❱
+          User input is passed to a function that executes a shell command. This can lead to remote code
+          execution.                                                                                    
+          Details: https://sg.run/kxEEz                                                                 
+                                                                                                        
+           31┆ $process = proc_open($command, $descriptors, $pipes);
+   
+   ❯❯❱ php.lang.security.tainted-exec.tainted-exec
+          ❰❰ Blocking ❱❱
+          Executing non-constant commands. This can lead to command injection. You should use
+          `escapeshellarg()` when using command.                                             
+          Details: https://sg.run/JAkP                                                       
+                                                                                             
+           31┆ $process = proc_open($command, $descriptors, $pipes);
+                                          
+    vulnerabilities/exec/source/medium.php
+    ❯❱ php.lang.security.injection.tainted-exec.tainted-exec
+          ❰❰ Blocking ❱❱
+          User input is passed to a function that executes a shell command. This can lead to remote code
+          execution.                                                                                    
+          Details: https://sg.run/kxEEz                                                                 
+                                                                                                        
+           19┆ $cmd = shell_exec( 'ping  ' . $target );
+   
+   ❯❯❱ php.lang.security.tainted-exec.tainted-exec
+          ❰❰ Blocking ❱❱
+          Executing non-constant commands. This can lead to command injection. You should use
+          `escapeshellarg()` when using command.                                             
+          Details: https://sg.run/JAkP                                                       
+                                                                                             
+           19┆ $cmd = shell_exec( 'ping  ' . $target );
+   
+    ❯❱ php.lang.security.injection.tainted-exec.tainted-exec
+          ❰❰ Blocking ❱❱
+          User input is passed to a function that executes a shell command. This can lead to remote code
+          execution.                                                                                    
+          Details: https://sg.run/kxEEz                                                                 
+                                                                                                        
+           23┆ $cmd = shell_exec( 'ping  -c 4 ' . $target );
+   
+   ❯❯❱ php.lang.security.tainted-exec.tainted-exec
+          ❰❰ Blocking ❱❱
+          Executing non-constant commands. This can lead to command injection. You should use
+          `escapeshellarg()` when using command.                                             
+          Details: https://sg.run/JAkP                                                       
+                                                                                             
+           23┆ $cmd = shell_exec( 'ping  -c 4 ' . $target );
+                                      
+    vulnerabilities/fi/source/high.php
+    ❯❱ php.lang.security.injection.tainted-filename.tainted-filename
+          ❰❰ Blocking ❱❱
+          File name based on user input risks server-side request forgery.
+          Details: https://sg.run/Ayqp                                    
+                                                                          
+            7┆ if( !fnmatch( "file*", $file ) && $file != "include.php" ) {
+                                              
+    vulnerabilities/sqli_blind/source/high.php
+   ❯❯❱ php.lang.security.injection.tainted-sql-string.tainted-sql-string
+          ❰❰ Blocking ❱❱
+          User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL
+          strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL    
+          strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate   
+          data from the database. Instead, use prepared statements (`$mysqli->prepare("INSERT INTO test(id,   
+          label) VALUES (?, ?)");`) or a safe library.                                                        
+          Details: https://sg.run/lZYG                                                                        
+                                                                                                              
+           11┆ $query  = "SELECT first_name, last_name FROM users WHERE user_id = '$id' LIMIT 1;";
+            ⋮┆----------------------------------------
+           33┆ $query  = "SELECT first_name, last_name FROM users WHERE user_id = '$id' LIMIT 1;";
+                                             
+    vulnerabilities/sqli_blind/source/low.php
+   ❯❯❱ php.lang.security.injection.tainted-sql-string.tainted-sql-string
+          ❰❰ Blocking ❱❱
+          User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL
+          strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL    
+          strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate   
+          data from the database. Instead, use prepared statements (`$mysqli->prepare("INSERT INTO test(id,   
+          label) VALUES (?, ?)");`) or a safe library.                                                        
+          Details: https://sg.run/lZYG                                                                        
+                                                                                                              
+           11┆ $query  = "SELECT first_name, last_name FROM users WHERE user_id = '$id';";
+            ⋮┆----------------------------------------
+           32┆ $query  = "SELECT first_name, last_name FROM users WHERE user_id = '$id';";
+                                                
+    vulnerabilities/sqli_blind/source/medium.php
+   ❯❯❱ php.lang.security.injection.tainted-sql-string.tainted-sql-string
+          ❰❰ Blocking ❱❱
+          User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL
+          strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL    
+          strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate   
+          data from the database. Instead, use prepared statements (`$mysqli->prepare("INSERT INTO test(id,   
+          label) VALUES (?, ?)");`) or a safe library.                                                        
+          Details: https://sg.run/lZYG                                                                        
+                                                                                                              
+           34┆ $query  = "SELECT first_name, last_name FROM users WHERE user_id = $id;";
+                                 
+    vulnerabilities/view_help.php
+    ❯❱ php.lang.security.injection.tainted-filename.tainted-filename
+          ❰❰ Blocking ❱❱
+          File name based on user input risks server-side request forgery.
+          Details: https://sg.run/Ayqp                                    
+                                                                          
+           20┆ eval( '?>' . file_get_contents( DVWA_WEB_PAGE_TO_ROOT .
+               "vulnerabilities/{$id}/help/help.php" ) . '<?php ' );  
+            ⋮┆----------------------------------------
+           22┆ eval( '?>' . file_get_contents( DVWA_WEB_PAGE_TO_ROOT .        
+               "vulnerabilities/{$id}/help/help.{$locale}.php" ) . '<?php ' );
+                                   
+    vulnerabilities/view_source.php
+    ❯❱ php.lang.security.injection.tainted-filename.tainted-filename
+          ❰❰ Blocking ❱❱
+          File name based on user input risks server-side request forgery.
+          Details: https://sg.run/Ayqp                                    
+                                                                          
+           63┆ $source = @file_get_contents( DVWA_WEB_PAGE_TO_ROOT .
+               "vulnerabilities/{$id}/source/{$security}.php" );    
+            ⋮┆----------------------------------------
+           67┆ if (file_exists (DVWA_WEB_PAGE_TO_ROOT . "vulnerabilities/{$id}/source/{$security}.js")) {
+            ⋮┆----------------------------------------
+           68┆ $js_source = @file_get_contents( DVWA_WEB_PAGE_TO_ROOT .
+               "vulnerabilities/{$id}/source/{$security}.js" );        
+                                       
+    vulnerabilities/view_source_all.php
+    ❯❱ php.lang.security.injection.tainted-filename.tainted-filename
+          ❰❰ Blocking ❱❱
+          File name based on user input risks server-side request forgery.
+          Details: https://sg.run/Ayqp                                    
+                                                                          
+           14┆ $lowsrc = @file_get_contents("./{$id}/source/low.php");
+            ⋮┆----------------------------------------
+           18┆ $medsrc = @file_get_contents("./{$id}/source/medium.php");
+            ⋮┆----------------------------------------
+           22┆ $highsrc = @file_get_contents("./{$id}/source/high.php");
+            ⋮┆----------------------------------------
+           26┆ $impsrc = @file_get_contents("./{$id}/source/impossible.php");
+
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+✅ Scan completed successfully.
+ • Findings: 40 (40 blocking)
+ • Rules run: 23
+ • Targets scanned: 169
+ • Parsed lines: ~100.0%
+ • Scan skipped: 
+   ◦ Not matching --include patterns: 115
+   ◦ Files matching .semgrepignore patterns: 2
+ • Scan was limited to files tracked by git
+ • For a detailed list of skipped files and lines, run semgrep with the --verbose flag
+Ran 23 rules on 169 files: 40 findings.
