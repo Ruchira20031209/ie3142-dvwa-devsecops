@@ -205,3 +205,114 @@ jobs:
               path: ${{ env.SAST_RESULTS_DIR }}/
               if-no-files-found: error
               retention-days: 30
+
+  sca:
+    name: SCA - Composer audit
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    defaults:
+      run:
+        shell: bash
+
+    env:
+      SCA_RESULTS_DIR: /tmp/ie3142-sca-results
+      COMPOSER_IMAGE: composer@sha256:9715c7f69044da2a212a5fbde29ee7da24e364d426560ae6367b060236f847d7
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Record dependency inputs and prepare Composer
+        run: |
+          mkdir -p "$SCA_RESULTS_DIR"
+          git rev-parse HEAD > "$SCA_RESULTS_DIR/source-commit.txt"
+          sha256sum vulnerabilities/api/composer.json \
+            vulnerabilities/api/composer.lock > "$SCA_RESULTS_DIR/dependencies.sha256"
+          cp vulnerabilities/api/composer.json "$SCA_RESULTS_DIR/composer.json"
+          cp vulnerabilities/api/composer.lock "$SCA_RESULTS_DIR/composer.lock"
+          printf '%s/%s/actions/runs/%s\n' \
+            "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID" \
+            > "$SCA_RESULTS_DIR/run-url.txt"
+          printf '%s\n' "$COMPOSER_IMAGE" > "$SCA_RESULTS_DIR/scanner-image.txt"
+          docker pull "$COMPOSER_IMAGE"
+          docker run --rm --network none "$COMPOSER_IMAGE" --version \
+            2>&1 | tee "$SCA_RESULTS_DIR/composer-version.txt"
+
+      - name: Validate dependency files
+        run: |
+          docker run --rm --network none \
+            -v "$PWD/vulnerabilities/api:/app:ro" -w /app \
+            "$COMPOSER_IMAGE" \
+            --no-interaction --no-plugins --no-scripts \
+            validate --no-check-publish \
+            2>&1 | tee "$SCA_RESULTS_DIR/validate-console.txt"
+
+      - name: Audit locked dependencies
+        run: |
+          date -u +'%Y-%m-%dT%H:%M:%SZ' > "$SCA_RESULTS_DIR/audit-time-utc.txt"
+          set +e
+          docker run --rm \
+            -v "$PWD/vulnerabilities/api:/app:ro" -w /app \
+            "$COMPOSER_IMAGE" \
+            --no-interaction --no-plugins --no-scripts \
+            audit --locked --format=json --abandoned=fail \
+            > "$SCA_RESULTS_DIR/composer-audit.json" \
+            2> "$SCA_RESULTS_DIR/audit-stderr.txt"
+          audit_exit=$?
+          set -e
+          printf '%s\n' "$audit_exit" > "$SCA_RESULTS_DIR/exit-code.txt"
+          cat "$SCA_RESULTS_DIR/audit-stderr.txt"
+          cat "$SCA_RESULTS_DIR/composer-audit.json"
+          printf '\nComposer audit exit code: %s\n' "$audit_exit"
+          exit "$audit_exit"
+
+      - name: Summarize dependency audit
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          output = Path(os.environ['SCA_RESULTS_DIR'])
+          audit_file = output / 'composer-audit.json'
+          if not audit_file.is_file() or audit_file.stat().st_size == 0:
+              raise SystemExit('No audit report was produced. Check the earlier steps.')
+          report = json.loads(audit_file.read_text())
+          if not isinstance(report, dict) or not report:
+              raise SystemExit('Unexpected audit report format. Inspect the saved report.')
+          lock = json.loads((output / 'composer.lock').read_text())
+          packages = lock['packages'] + lock.get('packages-dev', [])
+          if not packages:
+              raise SystemExit('No locked packages were available to audit.')
+          audit_exit = int((output / 'exit-code.txt').read_text().strip())
+          summary = '\n'.join([
+              '# Composer dependency audit',
+              '',
+              'Scope: vulnerabilities/api/composer.lock, including dev dependencies.',
+              f'Locked packages: {len(packages)}',
+              f'Composer audit exit code: {audit_exit}',
+              'Policy: any nonzero Composer audit result fails this job.',
+              '',
+              'Full audit report:',
+              '```json',
+              json.dumps(report, indent=2),
+              '```',
+          ]) + '\n'
+          print(summary)
+          (output / 'summary.md').write_text(summary)
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as handle:
+              handle.write(summary)
+          PY
+
+      - name: Upload dependency audit evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: sca-${{ github.run_number }}-${{ github.run_attempt }}
+          path: ${{ env.SCA_RESULTS_DIR }}/
+          if-no-files-found: error
+          retention-days: 30
