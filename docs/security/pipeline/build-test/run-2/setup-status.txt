@@ -1,0 +1,1 @@
+CI database initialized; temporary test login configured.

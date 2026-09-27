@@ -1,0 +1,4 @@
+Docker version 28.0.4, build b8034c0
+Docker Compose version v2.38.2
+Python 3.12.3
+x86_64

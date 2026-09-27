@@ -95,3 +95,113 @@ jobs:
           path: ${{ env.CI_RESULTS_DIR }}/
           if-no-files-found: error
           retention-days: 30
+
+  sast:
+        name: SAST - Semgrep
+        runs-on: ubuntu-24.04
+        timeout-minutes: 15
+
+        defaults:
+          run:
+            shell: bash
+
+        env:
+          SAST_RESULTS_DIR: /tmp/ie3142-sast-results
+
+        steps:
+          - name: Check out repository
+            uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+            with:
+              persist-credentials: false
+
+          - name: Record scan inputs
+            run: |
+              mkdir -p "$SAST_RESULTS_DIR"
+              git rev-parse HEAD > "$SAST_RESULTS_DIR/source-commit.txt"
+              sha256sum .semgrep/php.yml > "$SAST_RESULTS_DIR/rules.sha256"
+              cp .semgrep/php.yml "$SAST_RESULTS_DIR/rules.yml"
+              printf '%s/%s/actions/runs/%s\n' \
+                "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID" \
+                > "$SAST_RESULTS_DIR/run-url.txt"
+              docker pull semgrep/semgrep:1.177.0
+              docker image inspect semgrep/semgrep:1.177.0 \
+                --format '{{index .RepoDigests 0}}' \
+                > "$SAST_RESULTS_DIR/scanner-image.txt"
+
+          - name: Scan PHP source with frozen rules
+            run: |
+              set +e
+              docker run --rm --network none \
+                -v "$PWD:/src:ro" \
+                -v "$SAST_RESULTS_DIR:/results" \
+                -w /src \
+                semgrep/semgrep:1.177.0 semgrep scan \
+                --config .semgrep/php.yml \
+                --oss-only --metrics=off --disable-version-check \
+                --no-rewrite-rule-ids --include '*.php' \
+                --json-output /results/semgrep.json \
+                --sarif-output /results/semgrep.sarif . \
+                2>&1 | tee "$SAST_RESULTS_DIR/semgrep-console.txt"
+              scan_exit=$?
+              set -e
+              printf '%s\n' "$scan_exit" > "$SAST_RESULTS_DIR/exit-code.txt"
+              printf 'Semgrep exit code: %s\n' "$scan_exit"
+              exit "$scan_exit"
+
+          - name: Summarize findings and check scan coverage
+            run: |
+              python3 - <<'PY'
+              import json
+              import os
+              from collections import Counter
+              from pathlib import Path
+
+              output = Path(os.environ['SAST_RESULTS_DIR'])
+              report = json.loads((output / 'semgrep.json').read_text())
+              findings = report['results']
+              errors = report['errors']
+              scanned = set(report['paths']['scanned'])
+              skipped_rules = report.get('skipped_rules', [])
+              counts = Counter(item['extra']['severity'] for item in findings)
+              required = {
+                  'vulnerabilities/sqli/source/low.php',
+                  'vulnerabilities/xss_r/source/low.php',
+                  'vulnerabilities/exec/source/low.php',
+                  'vulnerabilities/fi/source/low.php',
+                  'vulnerabilities/fi/index.php',
+              }
+              missing = sorted(required - scanned)
+              summary = '\n'.join([
+                  '# Semgrep SAST',
+                  '',
+                  f"Semgrep version: {report['version']}",
+                  f'PHP files scanned: {len(scanned)}',
+                  f'Total findings: {len(findings)}',
+                  f"ERROR: {counts['ERROR']}",
+                  f"WARNING: {counts['WARNING']}",
+                  f"INFO: {counts['INFO']}",
+                  f'Scan errors: {len(errors)}',
+                  f'Skipped rules: {len(skipped_rules)}',
+                  f'Missing required files: {len(missing)}',
+                  '',
+                  'Mode: report all findings; no severity gate configured yet.',
+              ]) + '\n'
+              print(summary)
+              (output / 'summary.md').write_text(summary)
+              with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as handle:
+                  handle.write(summary)
+              if errors or skipped_rules or missing:
+                  print('::error::Incomplete SAST scan. Inspect the saved reports.')
+                  if missing:
+                      print('Missing files:', ', '.join(missing))
+                  raise SystemExit(1)
+              PY
+
+          - name: Upload SAST evidence
+            if: always()
+            uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+            with:
+              name: sast-${{ github.run_number }}-${{ github.run_attempt }}
+              path: ${{ env.SAST_RESULTS_DIR }}/
+              if-no-files-found: error
+              retention-days: 30
