@@ -1,0 +1,57 @@
+test_01_sql_normal_user (__main__.SecurityRegressionTests.test_01_sql_normal_user) ... 
+Target: http://127.0.0.1; Python: 3.12.14
+Login verified; security=low; SQLi backend=mysql.
+
+
+  GET vulnerabilities/sqli/ input={'id': '1', 'Submit': 'Submit'} -> HTTP 200
+ok
+test_02_sql_second_user (__main__.SecurityRegressionTests.test_02_sql_second_user) ... 
+  GET vulnerabilities/sqli/ input={'id': '2', 'Submit': 'Submit'} -> HTTP 200
+ok
+test_03_sql_missing_user (__main__.SecurityRegressionTests.test_03_sql_missing_user) ... ok
+
+  GET vulnerabilities/sqli/ input={'id': '9999', 'Submit': 'Submit'} -> HTTP 200
+test_04_sql_original_payload_rejected (__main__.SecurityRegressionTests.test_04_sql_original_payload_rejected) ... 
+  GET vulnerabilities/sqli/ input={'id': "1' OR '1'='1", 'Submit': 'Submit'} -> HTTP 200
+ok
+test_05_sql_array_rejected (__main__.SecurityRegressionTests.test_05_sql_array_rejected) ... ok
+test_06_xss_normal_name (__main__.SecurityRegressionTests.test_06_xss_normal_name) ... 
+  GET vulnerabilities/sqli/ input={'id[]': '1', 'Submit': 'Submit'} -> HTTP 200
+ok
+test_07_xss_original_payload_encoded (__main__.SecurityRegressionTests.test_07_xss_original_payload_encoded) ... 
+  GET vulnerabilities/xss_r/ input={'name': 'Student'} -> HTTP 200
+
+  GET vulnerabilities/xss_r/ input={'name': "<script>alert('IE3142-XSS')</script>"} -> HTTP 200
+ok
+test_08_xss_array_rejected (__main__.SecurityRegressionTests.test_08_xss_array_rejected) ... ok
+test_09_command_normal_ping (__main__.SecurityRegressionTests.test_09_command_normal_ping) ... 
+  GET vulnerabilities/xss_r/ input={'name[]': 'Student'} -> HTTP 200
+
+  POST vulnerabilities/exec/ input={'ip': '127.0.0.1', 'Submit': 'Submit'} -> HTTP 200
+ok
+test_10_command_original_payload_rejected (__main__.SecurityRegressionTests.test_10_command_original_payload_rejected) ... 
+  POST vulnerabilities/exec/ input={'ip': '127.0.0.1; echo IE3142-CMD', 'Submit': 'Submit'} -> HTTP 200
+ok
+test_11_command_array_rejected (__main__.SecurityRegressionTests.test_11_command_array_rejected) ... 
+  POST vulnerabilities/exec/ input={'ip[]': '127.0.0.1', 'Submit': 'Submit'} -> HTTP 200
+ok
+test_12_file_inclusion_normal_pages (__main__.SecurityRegressionTests.test_12_file_inclusion_normal_pages) ... 
+  GET vulnerabilities/fi/ input=None -> HTTP 200
+
+  GET vulnerabilities/fi/ input={'page': 'file1.php'} -> HTTP 200
+
+  GET vulnerabilities/fi/ input={'page': 'file2.php'} -> HTTP 200
+
+  GET vulnerabilities/fi/ input={'page': 'file3.php'} -> HTTP 200
+ok
+test_13_file_inclusion_original_payload_rejected (__main__.SecurityRegressionTests.test_13_file_inclusion_original_payload_rejected) ... ok
+
+  GET vulnerabilities/fi/ input={'page': '../../../../../etc/os-release'} -> HTTP 400
+test_14_file_inclusion_array_rejected (__main__.SecurityRegressionTests.test_14_file_inclusion_array_rejected) ... ok
+
+  GET vulnerabilities/fi/ input={'page[]': 'file1.php'} -> HTTP 400
+
+----------------------------------------------------------------------
+Ran 14 tests in 3.164s
+
+OK
