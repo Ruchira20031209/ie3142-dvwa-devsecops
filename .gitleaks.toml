@@ -1,0 +1,28 @@
+title = "IE3142 reviewed secret-scan configuration"
+
+[extend]
+useDefault = true
+
+# Public hashes in the immutable Trivy report introduced by this commit.
+[[rules]]
+id = "sourcegraph-access-token"
+
+[[rules.allowlists]]
+description = "Reviewed public Git/build hashes and signing fingerprints in run-8 DVWA report"
+condition = "AND"
+commits = ["16cc31ef9c222bfe34dee01f61a9fd7e3e733814"]
+paths = ['''^docs/security/pipeline/containers/run-8/dvwa-trivy\.json$''']
+regexTarget = "secret"
+regexes = ['''^[A-Fa-f0-9]{40}$''']
+
+# Public MariaDB signing-key fingerprint in the same historical report set.
+[[rules]]
+id = "generic-api-key"
+
+[[rules.allowlists]]
+description = "Reviewed MariaDB public signing-key fingerprint in run-8 database report"
+condition = "AND"
+commits = ["16cc31ef9c222bfe34dee01f61a9fd7e3e733814"]
+paths = ['''^docs/security/pipeline/containers/run-8/db-trivy\.json$''']
+regexTarget = "secret"
+regexes = ['''(?i)^177F4010FE56CA3336300305F1656F24C74CD1D8$''']
