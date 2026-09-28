@@ -347,7 +347,9 @@ jobs:
             "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID" \
             > "$SECRETS_RESULTS_DIR/run-url.txt"
           printf '[extend]\nuseDefault = true\n' > "$SECRETS_RESULTS_DIR/gitleaks.toml"
-          : > "$SECRETS_RESULTS_DIR/gitleaksignore.txt"
+                    cp .gitleaksignore "$SECRETS_RESULTS_DIR/gitleaksignore.txt"
+          cp docs/security/pipeline/secrets/SECRETS_TRIAGE.md "$SECRETS_RESULTS_DIR/triage.md"
+          sha256sum .gitleaksignore > "$SECRETS_RESULTS_DIR/ignore-file.sha256"
           printf '%s\n' "$GITLEAKS_IMAGE" > "$SECRETS_RESULTS_DIR/scanner-image.txt"
           docker pull "$GITLEAKS_IMAGE"
           docker run --rm --network none "$GITLEAKS_IMAGE" version \
@@ -404,16 +406,22 @@ jobs:
           (output / 'gitleaks-locations.json').write_text(
               json.dumps(safe_findings, indent=2) + '\n'
           )
-          commits = int((output / 'commits-available.txt').read_text().strip())
+                    commits = int((output / 'commits-available.txt').read_text().strip())
+          exception_count = sum(
+              1 for line in (output / 'gitleaksignore.txt').read_text().splitlines()
+              if line.strip() and not line.lstrip().startswith('#')
+          )
           summary = '\n'.join([
               '# Gitleaks secret scan',
               '',
               'Scope: Git history across all fetched refs.',
-              'Rules: built-in defaults; no project exclusions or baseline.',
+              'Rules: built-in defaults with reviewed fingerprint exceptions.',
+              f'Reviewed fingerprint exceptions configured: {exception_count}',
+              'Exception details: gitleaksignore.txt and triage.md.',
               f'Commits available in checkout: {commits}',
-              f'Potential secret findings: {len(findings)}',
+              f'Findings after reviewed exceptions: {len(findings)}',
               f'Gitleaks exit code: {scan_exit}',
-              'Policy: any finding or scanner error fails this job.',
+              'Policy: any remaining finding or scanner error fails this job.',
               'The saved JSON contains finding locations, without matched values.',
           ]) + '\n'
           print(summary)
