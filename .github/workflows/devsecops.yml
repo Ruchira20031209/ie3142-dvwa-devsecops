@@ -23,6 +23,7 @@ jobs:
       DB_ROOT_PASSWORD: ${{ secrets.CI_DB_ROOT_PASSWORD }}
       DVWA_BASE_URL: http://127.0.0.1:4280
       CI_RESULTS_DIR: /tmp/ie3142-ci-results
+      CONTAINER_RESULTS_DIR: /tmp/ie3142-container-results
 
     steps:
       - name: Check out repository
@@ -76,6 +77,23 @@ jobs:
           printf '%s\n' "$tests_exit" > "$CI_RESULTS_DIR/test-exit-code.txt"
           printf 'Test exit code: %s\n' "$tests_exit"
           exit "$tests_exit"
+
+      - name: Scan CI images with Trivy
+        run: bash tests/ci_scan_containers.sh
+
+      - name: Summarize container scan results
+        if: always()
+        run: python3 -B tests/ci_summarize_containers.py
+
+      - name: Upload container scan evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: containers-${{ github.run_number }}-${{ github.run_attempt }}
+          path: ${{ env.CONTAINER_RESULTS_DIR }}/
+          if-no-files-found: error
+          retention-days: 30
+
 
       - name: Record container status
         if: always()
