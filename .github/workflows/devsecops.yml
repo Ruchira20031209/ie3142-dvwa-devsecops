@@ -130,6 +130,7 @@ jobs:
           - name: Check out repository
             uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
             with:
+              fetch-depth: 0
               persist-credentials: false
 
           - name: Record scan inputs
@@ -202,7 +203,7 @@ jobs:
                   f'Skipped rules: {len(skipped_rules)}',
                   f'Missing required files: {len(missing)}',
                   '',
-                  'Mode: report all findings; no severity gate configured yet.',
+                  'Mode: full inventory; a separate gate blocks new ERROR findings.',
               ]) + '\n'
               print(summary)
               (output / 'summary.md').write_text(summary)
@@ -214,6 +215,9 @@ jobs:
                       print('Missing files:', ', '.join(missing))
                   raise SystemExit(1)
               PY
+          - name: Enforce SAST security gate
+            run: python3 -B -u tests/ci_gate_sast.py
+
 
           - name: Upload SAST evidence
             if: always()
