@@ -316,3 +316,119 @@ jobs:
           path: ${{ env.SCA_RESULTS_DIR }}/
           if-no-files-found: error
           retention-days: 30
+
+  secret-scan:
+    name: Secrets - Gitleaks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    defaults:
+      run:
+        shell: bash
+
+    env:
+      SECRETS_RESULTS_DIR: /tmp/ie3142-secrets-results
+      # Gitleaks v8.30.1, pinned to its published image digest.
+      GITLEAKS_IMAGE: ghcr.io/gitleaks/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f
+
+    steps:
+      - name: Check out full repository history
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Record inputs and prepare Gitleaks
+        run: |
+          mkdir -p "$SECRETS_RESULTS_DIR" "$RUNNER_TEMP/ie3142-gitleaks-raw"
+          git rev-parse HEAD > "$SECRETS_RESULTS_DIR/source-commit.txt"
+          git rev-list --all --count > "$SECRETS_RESULTS_DIR/commits-available.txt"
+          printf '%s/%s/actions/runs/%s\n' \
+            "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID" \
+            > "$SECRETS_RESULTS_DIR/run-url.txt"
+          printf '[extend]\nuseDefault = true\n' > "$SECRETS_RESULTS_DIR/gitleaks.toml"
+          : > "$SECRETS_RESULTS_DIR/gitleaksignore.txt"
+          printf '%s\n' "$GITLEAKS_IMAGE" > "$SECRETS_RESULTS_DIR/scanner-image.txt"
+          docker pull "$GITLEAKS_IMAGE"
+          docker run --rm --network none "$GITLEAKS_IMAGE" version \
+            2>&1 | tee "$SECRETS_RESULTS_DIR/gitleaks-version.txt"
+
+      - name: Scan Git history for secrets
+        run: |
+          date -u +'%Y-%m-%dT%H:%M:%SZ' > "$SECRETS_RESULTS_DIR/scan-time-utc.txt"
+          set +e
+          docker run --rm --network none \
+            --user "$(id -u):$(id -g)" \
+            -v "$PWD:/src:ro" \
+            -v "$SECRETS_RESULTS_DIR:/results:ro" \
+            -v "$RUNNER_TEMP/ie3142-gitleaks-raw:/raw" \
+            -w /src "$GITLEAKS_IMAGE" git /src \
+            --config=/results/gitleaks.toml \
+            --gitleaks-ignore-path=/results/gitleaksignore.txt \
+            --ignore-gitleaks-allow --log-opts="--all" \
+            --redact=100 --no-banner --no-color \
+            --exit-code=10 --report-format=json \
+            --report-path=/raw/gitleaks.json \
+            2>&1 | tee "$SECRETS_RESULTS_DIR/gitleaks-console.txt"
+          scan_exit=$?
+          set -e
+          printf '%s\n' "$scan_exit" > "$SECRETS_RESULTS_DIR/exit-code.txt"
+          printf 'Gitleaks exit code: %s\n' "$scan_exit"
+          exit "$scan_exit"
+
+      - name: Save finding locations and summarize scan
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          output = Path(os.environ['SECRETS_RESULTS_DIR'])
+          raw = Path(os.environ['RUNNER_TEMP']) / 'ie3142-gitleaks-raw/gitleaks.json'
+          if not raw.is_file() or raw.stat().st_size == 0:
+              raise SystemExit('No Gitleaks report was produced. Check the scan log.')
+          try:
+              findings = json.loads(raw.read_text())
+          finally:
+              raw.unlink(missing_ok=True)
+          scan_exit = int((output / 'exit-code.txt').read_text().strip())
+          if findings is None and scan_exit == 0:
+              findings = []
+          if not isinstance(findings, list) or any(not isinstance(f, dict) for f in findings):
+              raise SystemExit('Unexpected Gitleaks report format.')
+
+          # Preserve locations, but omit Secret, Match and commit Message fields.
+          fields = ('RuleID', 'File', 'StartLine', 'EndLine', 'Commit', 'Fingerprint')
+          safe_findings = [{key: finding.get(key) for key in fields} for finding in findings]
+          (output / 'gitleaks-locations.json').write_text(
+              json.dumps(safe_findings, indent=2) + '\n'
+          )
+          commits = int((output / 'commits-available.txt').read_text().strip())
+          summary = '\n'.join([
+              '# Gitleaks secret scan',
+              '',
+              'Scope: Git history across all fetched refs.',
+              'Rules: built-in defaults; no project exclusions or baseline.',
+              f'Commits available in checkout: {commits}',
+              f'Potential secret findings: {len(findings)}',
+              f'Gitleaks exit code: {scan_exit}',
+              'Policy: any finding or scanner error fails this job.',
+              'The saved JSON contains finding locations, without matched values.',
+          ]) + '\n'
+          print(summary)
+          (output / 'summary.md').write_text(summary)
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as handle:
+              handle.write(summary)
+          if scan_exit != (10 if findings else 0):
+              raise SystemExit('Unexpected scanner result. Review the scan log.')
+          PY
+
+      - name: Upload secret scan evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: secrets-${{ github.run_number }}-${{ github.run_attempt }}
+          path: ${{ env.SECRETS_RESULTS_DIR }}/
+          if-no-files-found: error
+          retention-days: 30
