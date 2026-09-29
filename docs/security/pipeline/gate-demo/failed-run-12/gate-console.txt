@@ -1,0 +1,59 @@
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 1 file tracked by git with 10 Code rules:
+  Scanning 1 file with 10 php rules.
+  Current version has 2 findings.
+
+Creating git worktree from '21fb6a96ffce7b16b3a807896001bba4b7a76968' to scan baseline.
+  Will report findings introduced by these commits (may be incomplete for shallow checkouts):
+    * 2360380 test: reintroduce SQL injection to demonstrate SAST gate
+    * 36a60d8 ci: document exact exceptions for public PHP signing fingerprints
+    * 8b284ae ci: scope exceptions for public metadata in Trivy evidence
+    * 16cc31e ci: block new high-severity SAST findings
+
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 1 file tracked by git with 1 Code rule:
+  Scanning 1 file.
+                   
+                   
+┌─────────────────┐
+│ 2 Code Findings │
+└─────────────────┘
+                                       
+    vulnerabilities/sqli/source/low.php
+   ❯❯❱ php.lang.security.injection.tainted-sql-string.tainted-sql-string
+          ❰❰ Blocking ❱❱
+          User data flows into this manually-constructed SQL string. User data can be safely inserted into SQL
+          strings using prepared statements or an object-relational mapper (ORM). Manually-constructed SQL    
+          strings is a possible indicator of SQL injection, which could let an attacker steal or manipulate   
+          data from the database. Instead, use prepared statements (`$mysqli->prepare("INSERT INTO test(id,   
+          label) VALUES (?, ?)");`) or a safe library.                                                        
+          Details: https://sg.run/lZYG                                                                        
+                                                                                                              
+           10┆ $query  = "SELECT first_name, last_name FROM users WHERE user_id = '$id';";
+            ⋮┆----------------------------------------
+           31┆ $query  = "SELECT first_name, last_name FROM users WHERE user_id = '$id';";
+
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+✅ Scan completed successfully.
+ • Findings: 2 (2 blocking)
+ • Rules run: 10
+ • Targets scanned: 1
+ • Parsed lines: ~100.0%
+ • Scan skipped: 
+   ◦ Not matching --include patterns: 29
+   ◦ Files matching .semgrepignore patterns: 2
+ • Scan was limited to files changed since baseline commit.
+ • For a detailed list of skipped files and lines, run semgrep with the --verbose flag
+Ran 10 rules on 1 file: 2 findings.

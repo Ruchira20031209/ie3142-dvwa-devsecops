@@ -1,0 +1,7 @@
+{
+  "baseline_commit": "21fb6a96ffce7b16b3a807896001bba4b7a76968",
+  "blocking_severity": "ERROR",
+  "scope": "new findings across PHP files relative to the fixed baseline",
+  "scanner_image": "semgrep/semgrep@sha256:acaac22ffc7b7cc5926de0751b223bce0b2491c33d18422fa72f632c78d81198",
+  "rules_sha256": "ccfc3341c7ac7a66b85f249713a277f4d4a0e9de93c75c609e2f82e52f0aabac"
+}
