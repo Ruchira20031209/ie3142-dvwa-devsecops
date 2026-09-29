@@ -4,3 +4,9 @@ b124bd741ed959c88c4018e86e0cb7c39b325833:vulnerabilities/csrf/help/help.php:gene
 
 # reCAPTCHA: public client-side site key in historical HTML.
 5ce2b495222960a379fc51f8e717ae0089a36c0e:external/recaptcha/recaptchalib.php:generic-api-key:41
+
+
+# Reviewed 2026-09-29: public PHP signing-key fingerprints in run-8 Trivy metadata.
+# Rationale: docs/security/pipeline/secrets/TRIVY_REPORT_REVIEW.md
+16cc31ef9c222bfe34dee01f61a9fd7e3e733814:docs/security/pipeline/containers/run-8/dvwa-trivy.json:generic-api-key:123
+16cc31ef9c222bfe34dee01f61a9fd7e3e733814:docs/security/pipeline/containers/run-8/dvwa-trivy.json:generic-api-key:295

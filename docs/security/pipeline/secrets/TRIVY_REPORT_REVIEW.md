@@ -45,3 +45,30 @@ References:
 - https://github.com/gitleaks/gitleaks/blob/master/README.md
 - https://github.com/gitleaks/gitleaks/issues/1898
 - https://github.com/MariaDB/mariadb-docker/blob/master/10.11/Dockerfile
+
+## Follow-up review: run 10
+
+Review date: 2026-09-29.
+
+Run 10, source commit 8b284ae, reported two remaining findings:
+https://github.com/Ruchira20031209/ie3142-dvwa-devsecops/actions/runs/36484503820
+
+Both use the generic-api-key rule and point to
+docs/security/pipeline/containers/run-8/dvwa-trivy.json,
+at lines 123 and 295, introduced in commit 16cc31e.
+
+The original report was inspected. Both lines contain GPG_KEYS metadata
+with public PHP release-signing key fingerprints. The same fingerprints
+are published in the PHP Docker image source:
+https://github.com/docker-library/php/blob/master/8.5/bookworm/apache/Dockerfile
+
+Decision: classify these two findings as false positives and add their
+exact finding fingerprints to .gitleaksignore. The two earlier fingerprint
+exceptions and the two existing rule-specific allowlists remain.
+
+These additions apply to the specified historical commit, file, rule and
+line. Default detection rules remain enabled. The original Trivy reports
+remain unchanged.
+
+Validation is pending the next CI run. Any remaining finding or scanner
+error must still fail the secrets job.
